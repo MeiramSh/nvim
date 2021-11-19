@@ -74,6 +74,16 @@ _G.packer_plugins = {
     path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-autopairs",
     url = "https://github.com/windwp/nvim-autopairs"
   },
+  ["nvim-lspconfig"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-lspconfig",
+    url = "https://github.com/neovim/nvim-lspconfig"
+  },
+  ["nvim-treesitter"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-treesitter",
+    url = "https://github.com/nvim-treesitter/nvim-treesitter"
+  },
   ["packer.nvim"] = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/packer/start/packer.nvim",
