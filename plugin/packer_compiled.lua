@@ -88,6 +88,16 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
+  },
+  playground = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/playground",
+    url = "https://github.com/nvim-treesitter/playground"
+  },
+  ["sqls.nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/sqls.nvim",
+    url = "https://github.com/nanotee/sqls.nvim"
   }
 }
 

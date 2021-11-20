@@ -16,10 +16,12 @@ use 'wbthomason/packer.nvim'
 use 'windwp/nvim-autopairs'
 use 'neovim/nvim-lspconfig'
 use {
-'nvim-treesitter/nvim-treesitter',
-run = ':TSUpdate'
+	'nvim-treesitter/nvim-treesitter',
+	run = ':TSUpdate'
 }
-
+use 'nvim-treesitter/nvim-treesitter'
+use 'nvim-treesitter/playground'
+use 'nanotee/sqls.nvim'
 
 -- autopairs
 require('nvim-autopairs').setup{}
@@ -76,6 +78,24 @@ end
 
 --TreeSitter
 require'nvim-treesitter.configs'.setup {
+    playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  },
   highlight = {
     enable = true,              -- false will disable the whole extension
     disable = { "c", "rust" },  -- list of language that will be disabled
@@ -86,3 +106,12 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+require'lspconfig'.sqls.setup{
+    on_attach = function(client)
+        client.resolved_capabilities.execute_command = true
+
+        require'sqls'.setup{}
+    end
+}
+
