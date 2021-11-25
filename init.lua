@@ -13,7 +13,16 @@ set number relativenumber
 ------------------------------------------------------------------------------------
 
 local packer = require 'packer'
-local use = packer.use
+local function use(arg) 
+	if pcall(packer.use, arg) then
+		print('Succesfully Synced')
+	else
+		vim.cmd[[
+		PackerSync
+		]]
+	end
+end
+
 
 packer.init({
 	package_root = join_paths(vim.fn.stdpath('config'), 'plugins'),	
