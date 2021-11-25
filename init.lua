@@ -14,9 +14,7 @@ set number relativenumber
 
 local packer = require 'packer'
 local function use(arg) 
-	if pcall(packer.use, arg) then
-		print('Succesfully Synced')
-	else
+	if not pcall(packer.use, arg) then
 		vim.cmd[[
 		PackerSync
 		]]
