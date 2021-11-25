@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 cmd = vim.api.nvim_command
 join_paths = require('packer.util').join_paths
 
@@ -380,3 +381,6 @@ require'nvim-web-devicons'.setup {
 
 -- html
 
+=======
+wnlknwlkendl
+>>>>>>> Stashed changes
