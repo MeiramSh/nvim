@@ -11,16 +11,20 @@ set number relativenumber
 ------------------------------------------------------------------------------------
 -- PACKER
 ------------------------------------------------------------------------------------
-
-local packer = require 'packer'
-local function use(arg) 
-	if not pcall(packer.use, arg) then
-		vim.cmd[[
-		PackerSync
-		]]
+local function safe_req(arg)
+	local module = require(arg)
+	if not module then
+		vim.cmd 'PackerSync'
+		return require(arg)
+	else
+		return module
 	end
 end
+	
 
+
+local packer = require 'packer'
+local use = packer.use 
 
 packer.init({
 	package_root = join_paths(vim.fn.stdpath('config'), 'plugins'),	
@@ -62,6 +66,7 @@ use { 'nvim-lualine/lualine.nvim',
 ------------------------------------------------------------------------------------
 -- AUTOPAIRS
 ------------------------------------------------------------------------------------
+
 
 require('nvim-autopairs').setup{}
 
