@@ -3,26 +3,29 @@ join_paths = require('packer.util').join_paths
 
 cmd ('set packpath+='..join_paths(vim.fn.stdpath('config'), 'plugins', 'packer'))
 cmd [[
+let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
 set number relativenumber
+set shiftwidth=2
+"set guifont=JetBrainsMono\ Nerd\ Font:h10
 ]]
+
 
 ------------------------------------------------------------------------------------
 -- PACKER
 ------------------------------------------------------------------------------------
+
 local function safe_req(arg)
-	local module = require(arg)
-	if not module then
-		vim.cmd 'PackerSync'
-		return require(arg)
-	else
-		return module
-	end
+  local module = require(arg)
+  if not module then
+    vim.cmd 'PackerSync'
+    return require(arg)
+  else
+    return module
+  end
 end
 	
-
-
 local packer = require 'packer'
 local use = packer.use 
 
@@ -34,15 +37,12 @@ use 'wbthomason/packer.nvim'
 use 'windwp/nvim-autopairs'
 use 'neovim/nvim-lspconfig'
 use {
-	'nvim-treesitter/nvim-treesitter',
-	run = ':TSUpdate'
+  'nvim-treesitter/nvim-treesitter',
+  run = ':TSUpdate'
 }
-use 'nvim-treesitter/nvim-treesitter'
 use 'nvim-treesitter/playground'
 use 'nanotee/sqls.nvim'
 use 'hkupty/iron.nvim'
-
-
 
 use 'hrsh7th/cmp-nvim-lsp'
 use 'hrsh7th/cmp-buffer'
@@ -60,17 +60,24 @@ use { 'nvim-lualine/lualine.nvim',
   requires = {'kyazdani42/nvim-web-devicons', opt = true}
 }
 
------------------------------------------- END -------------------------------------
+use {
+  'nvim-telescope/telescope.nvim',
+  requires = { {'nvim-lua/plenary.nvim'} }
+}
+
+use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+
+use {
+  'goolord/alpha-nvim',
+  requires = { 'kyazdani42/nvim-web-devicons' },
+}
 
 
 ------------------------------------------------------------------------------------
 -- AUTOPAIRS
 ------------------------------------------------------------------------------------
 
-
 require('nvim-autopairs').setup{}
-
------------------------------------------- END -------------------------------------
 
 
 ------------------------------------------------------------------------------------
@@ -79,16 +86,24 @@ require('nvim-autopairs').setup{}
 
 local nvim_lsp = require('lspconfig')
 
+-- LspConfig setting border
+local win = require 'lspconfig.ui.windows'
+
+local _default_opts = win.default_opts
+
+win.default_opts = function()
+  local opts = _default_opts()
+  opts.border = 'single'
+  return opts
+end
 
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
   -- Enable completion triggered by <c-x><c-o>
- -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
@@ -99,25 +114,18 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa',
-  		'<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr',
-  		'<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl',
-  	'<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
-	opts)
-  buf_set_keymap('n', '<space>D',
-  	'<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e',
-  		'<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q',
-  	'<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', 'ff', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
 end
 
@@ -165,7 +173,35 @@ Haskell Language Server
   },
 }
 
------------------------------------------- END -------------------------------------
+-- BORDERS
+vim.lsp.handlers["textDocument/hover"] =
+  vim.lsp.with(
+  vim.lsp.handlers.hover,
+  {
+    border = "single"
+  }
+)
+
+vim.lsp.handlers["textDocument/signatureHelp"] =
+  vim.lsp.with(
+  vim.lsp.handlers.signature_help,
+  {
+    border = "single"
+  }
+)
+
+vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  virtual_text = false,
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+})
+
+local signs = { Error = " ", Warning = " ", Hint = " ", Information = " " }
+for type, icon in pairs(signs) do
+    local hl = "LspDiagnosticsSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
 
 
 ------------------------------------------------------------------------------------
@@ -215,12 +251,114 @@ require'nvim-treesitter.configs'.setup {
 }
 
 
------------------------------------------- END -------------------------------------
+------------------------------------------------------------------------------------
+-- TELESCOPE
+------------------------------------------------------------------------------------
+
+function readOnly (t)
+  local proxy = {}
+  local mt = {       -- create metatable
+    __index = t,
+    __newindex = function (t,k,v)
+      error("attempt to update a read-only table", 2)
+    end
+  }
+  setmetatable(proxy, mt)
+  return proxy
+end
+
+
+
+local telescope = require'telescope'
+local builtin = require'telescope.builtin' --Maybe
+
+telescope.setup { defaults = { file_ignore_patterns = {"node_modules", ".git"} } }
+
+local files_search_dirs = { '$HOME/Dev', '$HOME/.config/nvim','$HOME/.config/alacritty' }
+
+find = readOnly {
+  files = function() builtin.find_files({ hidden = true, search_dirs = files_search_dirs }) end, 
+  live_grep = function() builtin.live_grep { search_dirs = files_search_dirs } end,
+  buffers = function() builtin.buffers() end,
+  help_tags = function() builtin.help_tags() end,
+}
+
+telescope.load_extension('fzf')
+
+cmd[[
+nnoremap <space>ff <cmd>lua find.files()<cr>
+nnoremap <space>fg <cmd>lua find.live_grep()<cr>
+nnoremap <space>fb <cmd>lua require('telescope.builtin').buffers()<cr>
+nnoremap <space>fh <cmd>lua require('telescope.builtin').help_tags()<cr>
+]]
+
+
+------------------------------------------------------------------------------------
+-- ALPHA
+------------------------------------------------------------------------------------
+
+local alpha = require("alpha")
+local dashboard = require("alpha.themes.dashboard")
+local str = ''
+-- Set header
+dashboard.section.header.val = {
+    "                                                     ",
+    "  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
+    "  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
+    "  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
+    "  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
+    "  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
+    "  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
+    "                                                     ",
+}
+
+-- Set menu
+dashboard.section.buttons.val = {
+    dashboard.button( "e", "  > New file" , ":ene <BAR> startinsert <CR>"),
+    dashboard.button( "f", "  > Find file", ":lua find.files()<cr>"),
+    dashboard.button( "r", "  > Recent"   , ":Telescope oldfiles<CR>"),
+    dashboard.button( "s", "  > Settings" , ":e $MYVIMRC | :cd %:p:h <CR>"),
+    dashboard.button( "q", "  > Quit NVIM", ":qa<CR>"),
+}
+
+-- Set footer
+--   NOTE: This is currently a feature in my fork of alpha-nvim (opened PR #21, will update snippet if added to main)
+--   To see test this yourself, add the function as a dependecy in packer and uncomment the footer lines
+--   ```init.lua
+--   return require('packer').startup(function()
+--       use 'wbthomason/packer.nvim'
+--       use {
+--           'goolord/alpha-nvim', branch = 'feature/startify-fortune',
+--           requires = {'BlakeJC94/alpha-nvim-fortune'},
+--           config = function() require("config.alpha") end
+--       }
+--   end)
+--   ```
+-- local fortune = require("alpha.fortune") 
+-- dashboard.section.footer.val = fortune()
+
+-- Send config to alpha
+alpha.setup(dashboard.opts)
+
+-- Disable folding on alpha buffer
+vim.cmd([[
+    autocmd FileType alpha setlocal nofoldenable
+]])
 
 
 ------------------------------------------------------------------------------------
 -- CMP
 ------------------------------------------------------------------------------------
+
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
 local cmp = require'cmp'
 
 cmp.setup({
@@ -234,6 +372,25 @@ cmp.setup({
     end,
   },
   mapping = {
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif vim.fn["vsnip#available"](1) == 1 then
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+      end
+    end, { "i", "s" }),
     ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -284,7 +441,6 @@ require('lspconfig')['hls'].setup {
   capabilities = capabilities
 }
 
------------------------------------------- END -------------------------------------
 
 ------------------------------------------------------------------------------------
 -- GITHUB-THEME
@@ -295,10 +451,10 @@ require('github-theme').setup (
 )
 
 
------------------------------------------- END -------------------------------------
+------------------------------------------------------------------------------------
+-- LUALINE
+------------------------------------------------------------------------------------
 
-
---lualine
 require'lualine'.setup {
     options = {
 	theme = 'github'
@@ -315,7 +471,10 @@ require'lualine'.setup {
 }
 
 
---iron.nvim
+------------------------------------------------------------------------------------
+-- IRON
+------------------------------------------------------------------------------------
+
 local iron = require('iron')
 
 iron.core.set_config {
@@ -325,71 +484,10 @@ iron.core.set_config {
   repl_open_cmd = 'vertical bo 80 split',
 }
 
--- Borders
-vim.lsp.handlers["textDocument/hover"] =
-  vim.lsp.with(
-  vim.lsp.handlers.hover,
-  {
-    border = "single"
-  }
-)
-
-vim.lsp.handlers["textDocument/signatureHelp"] =
-  vim.lsp.with(
-  vim.lsp.handlers.signature_help,
-  {
-    border = "single"
-  }
-)
 
 
-vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-  virtual_text = true,
-  signs = true,
-  underline = true,
-  update_in_insert = false,
-})
+------------------------------------------------------------------------------------
+-- WEBDEVICONS
+------------------------------------------------------------------------------------
 
-
-
-local signs = { Error = " ", Warning = " ", Hint = " ", Information = " " }
-for type, icon in pairs(signs) do
-    local hl = "LspDiagnosticsSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
-
---nvim-web-devicons
-
-require'nvim-web-devicons'.setup {
- -- your personnal icons can go here (to override)
- -- DevIcon will be appended to `name`
- override = {
-  zsh = {
-    icon = "",
-    color = "#428850",
-    name = "Zsh"
-  },
-  lua = {
-    icon = ' ',
-    color ='#51a0cf',
-    name = 'Lua'
-  },
-  hs = {
-    icon = ' ',
-    color = '#5e5086',
-    name = 'Haskell'
-
-  }
- };
- -- globally enable default icons (default to false)
- -- will get overriden by `get_icons` option
- default = true;
-}
-
-
-
-
--- html
-
-
+require'nvim-web-devicons'.setup {}
