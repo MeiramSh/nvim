@@ -57,7 +57,7 @@ end
 time([[Luarocks path setup]], false)
 time([[try_loadstring definition]], true)
 local function try_loadstring(s, component, name)
-  local success, result = pcall(loadstring(s))
+  local success, result = pcall(loadstring(s), name, _G.packer_plugins[name])
   if not success then
     vim.schedule(function()
       vim.api.nvim_notify('packer.nvim: Error running ' .. component .. ' for ' .. name .. ': ' .. result, vim.log.levels.ERROR, {})
@@ -69,6 +69,11 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
+  ["alpha-nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/alpha-nvim",
+    url = "https://github.com/goolord/alpha-nvim"
+  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/packer/start/cmp-buffer",
@@ -144,10 +149,25 @@ _G.packer_plugins = {
     path = "/home/meiram/.config/nvim/plugins/packer/start/playground",
     url = "https://github.com/nvim-treesitter/playground"
   },
+  ["plenary.nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/plenary.nvim",
+    url = "https://github.com/nvim-lua/plenary.nvim"
+  },
   ["sqls.nvim"] = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/packer/start/sqls.nvim",
     url = "https://github.com/nanotee/sqls.nvim"
+  },
+  ["telescope-fzf-native.nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/telescope-fzf-native.nvim",
+    url = "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
+  },
+  ["telescope.nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/packer/start/telescope.nvim",
+    url = "https://github.com/nvim-telescope/telescope.nvim"
   },
   ["vim-vsnip"] = {
     loaded = true,
