@@ -8,9 +8,20 @@ highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
 set number relativenumber
 set shiftwidth=2
-"set guifont=JetBrainsMono\ Nerd\ Font:h10
+set guifont=NotoSansMono-Regular-Nerd-Font-Complete
 ]]
 
+-----------------------------------------------------------------------------------
+-- UTILS
+-----------------------------------------------------------------------------------
+
+function map(tbl, f)
+  local t = {}
+  for k,v in pairs(tbl) do
+    t[k] = f(v)
+  end
+  return t
+end
 
 -----------------------------------------------------------------------------------
 -- PACKER
@@ -36,7 +47,6 @@ use 'windwp/nvim-autopairs'
 use 'neovim/nvim-lspconfig'
 use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
 use 'nvim-treesitter/playground'
-use 'nanotee/sqls.nvim'
 use 'hkupty/iron.nvim'
 
 use 'hrsh7th/cmp-nvim-lsp'
@@ -99,26 +109,35 @@ local on_attach = function(client, bufnr)
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
+  
+  keymaps = {
+    {'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts},
+    {'n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts},
+    {'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts},
+    {'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts},
+    {'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts},
+    {'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts},
+    {'n', '<space>wr',
+      '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts},
+    {'n', '<space>wl',
+      '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts},
+    {'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts},
+    {'n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts},
+    {'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts},
+    {'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts},
+    {'n', '<space>e',
+      '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>',
+      opts},
+    {'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts},
+    {'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts},
+    {'n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts},
+    {'n', '<space>b', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts},
+  }
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-
+  for _,v in pairs(keymaps) do 
+    m, k, c, o = unpack(v)
+    buf_set_keymap(m, k, c, o)
+  end
 end
 
 -- HASKELL
@@ -129,7 +148,8 @@ configs.hls = {
   default_config = {
     cmd = { 'haskell-language-server-wrapper', '--lsp' },
     filetypes = { 'haskell', 'lhaskell' },
-    root_dir = util.root_pattern('*.cabal', 'stack.yaml', 'cabal.project', 'package.yaml', 'hie.yaml'),
+    root_dir = util.root_pattern('*.cabal', 'stack.yaml', 'cabal.project',
+      'package.yaml', 'hie.yaml'),
     settings = {
       haskell = {
         formattingProvider = 'ormolu',
@@ -160,7 +180,9 @@ Haskell Language Server
         ]],
 
     default_config = {
-      root_dir = [[root_pattern("*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml")]],
+      root_dir = [[
+	root_pattern("*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml")
+      ]],
     },
   },
 }
