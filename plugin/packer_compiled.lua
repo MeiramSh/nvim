@@ -154,11 +154,6 @@ _G.packer_plugins = {
     path = "/home/meiram/.config/nvim/plugins/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
-  ["sqls.nvim"] = {
-    loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/sqls.nvim",
-    url = "https://github.com/nanotee/sqls.nvim"
-  },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/packer/start/telescope-fzf-native.nvim",
