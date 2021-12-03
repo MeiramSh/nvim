@@ -8,7 +8,7 @@ highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
 set number relativenumber
 set shiftwidth=2
-set guifont=NotoSansMono-Regular-Nerd-Font-Complete
+"set guifont=NotoSansMono-Regular-Nerd-Font-Complete
 ]]
 
 -----------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ end
 local function safe_req(arg)
   local module = require(arg)
   if not module then
-    vim.cmd 'PackerSync'
+    cmd 'PackerSync'
     return require(arg)
   else
     return module
