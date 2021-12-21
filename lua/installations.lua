@@ -11,7 +11,7 @@ end
 local packer = require 'packer'
 local use = packer.use 
 
-packer.init { package_root = join_paths(vim.fn.stdpath('config'), 'plugins') }
+packer.init { package_root = join_paths(vim.fn.stdpath('config'), 'plugins', 'beta') }
 
 use 'wbthomason/packer.nvim'
 use 'windwp/nvim-autopairs'

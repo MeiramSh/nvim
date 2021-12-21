@@ -71,102 +71,102 @@ time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
   ["alpha-nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/alpha-nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/alpha-nvim",
     url = "https://github.com/goolord/alpha-nvim"
   },
   ["cmp-buffer"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/cmp-buffer",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/cmp-buffer",
     url = "https://github.com/hrsh7th/cmp-buffer"
   },
   ["cmp-cmdline"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/cmp-cmdline",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/cmp-cmdline",
     url = "https://github.com/hrsh7th/cmp-cmdline"
   },
   ["cmp-nvim-lsp"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/cmp-nvim-lsp",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/cmp-nvim-lsp",
     url = "https://github.com/hrsh7th/cmp-nvim-lsp"
   },
   ["cmp-path"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/cmp-path",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/cmp-path",
     url = "https://github.com/hrsh7th/cmp-path"
   },
   ["dracula.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/dracula.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/dracula.nvim",
     url = "https://github.com/Mofiqul/dracula.nvim"
   },
   ["github-nvim-theme"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/github-nvim-theme",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/github-nvim-theme",
     url = "https://github.com/projekt0n/github-nvim-theme"
   },
   ["iron.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/iron.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/iron.nvim",
     url = "https://github.com/hkupty/iron.nvim"
   },
   ["lualine.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/lualine.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
   },
   ["nvim-autopairs"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-autopairs",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/nvim-autopairs",
     url = "https://github.com/windwp/nvim-autopairs"
   },
   ["nvim-cmp"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-cmp",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/nvim-cmp",
     url = "https://github.com/hrsh7th/nvim-cmp"
   },
   ["nvim-lspconfig"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-lspconfig",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/nvim-lspconfig",
     url = "https://github.com/neovim/nvim-lspconfig"
   },
   ["nvim-treesitter"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-treesitter",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/nvim-treesitter",
     url = "https://github.com/nvim-treesitter/nvim-treesitter"
   },
   ["nvim-web-devicons"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/nvim-web-devicons",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/nvim-web-devicons",
     url = "https://github.com/kyazdani42/nvim-web-devicons"
   },
   ["packer.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/packer.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
   },
   playground = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/playground",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/playground",
     url = "https://github.com/nvim-treesitter/playground"
   },
   ["plenary.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/plenary.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
   ["telescope-fzf-native.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/telescope-fzf-native.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/telescope-fzf-native.nvim",
     url = "https://github.com/nvim-telescope/telescope-fzf-native.nvim"
   },
   ["telescope.nvim"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/telescope.nvim",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
   ["vim-vsnip"] = {
     loaded = true,
-    path = "/home/meiram/.config/nvim/plugins/packer/start/vim-vsnip",
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/vim-vsnip",
     url = "https://github.com/hrsh7th/vim-vsnip"
   }
 }

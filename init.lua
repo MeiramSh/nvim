@@ -1,7 +1,7 @@
 cmd = vim.api.nvim_command
 join_paths = require'packer.util'.join_paths
 
-cmd ('set packpath+='..join_paths(vim.fn.stdpath('config'), 'plugins','beta', 'packer'))
+cmd ('set packpath+='..join_paths(vim.fn.stdpath('config'), 'plugins', 'beta', 'packer'))
 cmd [[
 let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
