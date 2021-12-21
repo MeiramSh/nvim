@@ -6,6 +6,7 @@ cmd [[
 let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
+set cursorline
 set number relativenumber
 set shiftwidth=2
 "set guifont=NotoSansMono-Regular-Nerd-Font-Complete
@@ -137,7 +138,20 @@ Haskell Language Server
   },
 }
 
+
+-----------------------------------------------------------------------------------
+-- ELM
+-----------------------------------------------------------------------------------
+
+nvim_lsp.elmls.setup{
+  on_attach = on_attach
+}
+
+
+-----------------------------------------------------------------------------------
 -- BORDERS
+-----------------------------------------------------------------------------------
+
 vim.lsp.handlers["textDocument/hover"] =
   vim.lsp.with(
   vim.lsp.handlers.hover,
@@ -166,7 +180,6 @@ for type, icon in pairs(signs) do
     local hl = "LspDiagnosticsSign" .. type
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
-
 
 -----------------------------------------------------------------------------------
 --TREESITTER
@@ -455,3 +468,5 @@ iron.core.set_config {
 -----------------------------------------------------------------------------------
 
 require'nvim-web-devicons'.setup {}
+
+require'plenary.filetype'.add_file('sql')
