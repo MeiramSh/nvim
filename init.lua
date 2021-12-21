@@ -40,6 +40,9 @@ require'nvim-autopairs'.setup{}
 local nvim_lsp = require('lspconfig')
 
 -- LspConfig setting border
+packer/
+plugins/
+plugin/
 local win = require 'lspconfig.ui.windows'
 
 local _default_opts = win.default_opts
