@@ -6,11 +6,16 @@ cmd [[
 let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
-set cursorline
-set number relativenumber
-set shiftwidth=2
 "set guifont=NotoSansMono-Regular-Nerd-Font-Complete
 ]]
+
+
+vim.o.cursorline = true
+vim.o.shiftwidth = 2
+
+vim.o.number = true
+vim.o.relativenumber = true
+
 
 -----------------------------------------------------------------------------------
 -- UTILS
@@ -86,7 +91,7 @@ local on_attach = function(client, bufnr)
   }
 
   for _,v in pairs(keymaps) do 
-    m, k, c, o = unpack(v)
+    m , k, c, o = unpack(v)
     buf_set_keymap(m, k, c, o)
   end
 end
@@ -116,7 +121,7 @@ configs.hls = {
       local opts = {
         cwd = cfg.cwd,
         stdout_buffered = true,
-        on_stdout = on_stdout,
+        on_stdout   = on_stdout,
       }
       local chanid = vim.fn.jobstart({ cfg.cmd[1], '--version' }, opts)
       vim.fn.jobwait { chanid }
