@@ -104,6 +104,11 @@ _G.packer_plugins = {
     path = "/home/meiram/.config/nvim/plugins/beta/packer/start/github-nvim-theme",
     url = "https://github.com/projekt0n/github-nvim-theme"
   },
+  ["indent-blankline.nvim"] = {
+    loaded = true,
+    path = "/home/meiram/.config/nvim/plugins/beta/packer/start/indent-blankline.nvim",
+    url = "https://github.com/lukas-reineke/indent-blankline.nvim"
+  },
   ["iron.nvim"] = {
     loaded = true,
     path = "/home/meiram/.config/nvim/plugins/beta/packer/start/iron.nvim",

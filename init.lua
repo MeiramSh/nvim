@@ -1,9 +1,15 @@
-cmd = vim.api.nvim_command
-join_paths = require'packer.util'.join_paths
+function Map(tbl, f)
+    local t = {}
+    for k, v in pairs(tbl) do t[k] = f(v) end
+    return t
+end
 
-cmd('set packpath+=' ..
-        join_paths(vim.fn.stdpath('config'), 'plugins', 'beta', 'packer'))
-cmd [[
+Cmd = vim.api.nvim_command
+Join_paths = require'packer.util'.join_paths
+
+Cmd('set packpath+=' ..
+        Join_paths(vim.fn.stdpath('config'), 'plugins', 'beta', 'packer'))
+Cmd [[
 let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
@@ -12,19 +18,13 @@ highlight Comment ctermfg=8
 
 vim.o.cursorline = true
 vim.o.shiftwidth = 4
-
+vim.o.tabstop = 4
 vim.o.number = true
 vim.o.relativenumber = true
 
 -----------------------------------------------------------------------------------
 -- UTILS
 -----------------------------------------------------------------------------------
-
-function map(tbl, f)
-    local t = {}
-    for k, v in pairs(tbl) do t[k] = f(v) end
-    return t
-end
 
 require 'installations'
 
@@ -206,7 +206,7 @@ vim.lsp.handlers["textDocument/signatureHelp"] =
 
 vim.lsp.handlers['textDocument/publishDiagnostics'] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = false,
+        -- virtual_text = false,
         signs = true,
         underline = true,
         update_in_insert = false
@@ -215,11 +215,13 @@ vim.lsp.handlers['textDocument/publishDiagnostics'] =
 local signs = {
     Error = " ",
     Warning = " ",
+    Warn = " ",
     Hint = " ",
-    Information = " "
+    Information = " ",
+    Info = " "
 }
 for type, icon in pairs(signs) do
-    local hl = "LspDiagnosticsSign" .. type
+    local hl = "DiagnosticSign" .. type
     vim.fn.sign_define(hl, {text = icon, texthl = hl, numhl = hl})
 end
 
@@ -273,7 +275,7 @@ require'nvim-treesitter.configs'.setup {
 -- TELESCOPE
 -----------------------------------------------------------------------------------
 
-function readOnly(t)
+local function readOnly(t)
     local proxy = {}
     local mt = { -- create metatable
         __index = t,
@@ -307,7 +309,7 @@ find = readOnly {
 
 telescope.load_extension('fzf')
 
-cmd [[
+Cmd [[
 nnoremap <space>ff <cmd>lua find.files()<cr>
 nnoremap <space>fg <cmd>lua find.live_grep()<cr>
 nnoremap <space>fb <cmd>lua require('telescope.builtin').buffers()<cr>
@@ -354,7 +356,7 @@ dashboard.section.buttons.val = {
 --       }
 --   end)
 --   ```
--- local fortune = require("alpha.fortune") 
+-- local fortune = require("alpha.fortune")
 -- dashboard.section.footer.val = fortune()
 
 -- Send config to alpha
@@ -495,3 +497,5 @@ iron.core.set_config {
 require'nvim-web-devicons'.setup {}
 
 require'plenary.filetype'.add_file('sql')
+
+require 'plugins.indent-blankline'
