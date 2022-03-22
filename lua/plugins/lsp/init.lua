@@ -44,8 +44,7 @@ On_attach = function(_, bufnr)
         { 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts },
         { 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts }, {
             'n', '<space>e',
-            '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = "single"})<CR>',
-            opts,
+            '<cmd>lua vim.diagnostic.open_float({border = "single"})<CR>', opts,
         }, { 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts },
         { 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts },
         { 'n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts },

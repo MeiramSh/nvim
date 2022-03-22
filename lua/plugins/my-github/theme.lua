@@ -286,6 +286,11 @@ function M.setup(config)
         haskellTSNamespace = { fg = c.syntax.func },
         haskellTSOperator = { fg = c.orange },
 
+        -- idris
+        idrisType = { link = 'haskellTSNamespace' },
+        idrisIdentifier = { link = 'haskellTSType' },
+        idrisNumber = { link = 'haskellTSType' },
+
         -- LSP
         LspCodeLens = { fg = c.hint },
 

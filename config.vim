@@ -1,3 +1,21 @@
+function! SynStack ()
+    for i1 in synstack(line("."), col("."))
+        let i2 = synIDtrans(i1)
+        let n1 = synIDattr(i1, "name")
+        let n2 = synIDattr(i2, "name")
+        echo n1 "->" n2
+    endfor
+endfunction
+
+map gm :call SynStack()<CR>
+
+
+syntax on
+filetype on
+filetype plugin indent on
+
+execute pathogen#infect()
+
 let g:neovide_remember_window_size = v:true
 highlight MatchParen ctermfg=4 ctermbg=0
 highlight Comment ctermfg=8
