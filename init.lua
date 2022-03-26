@@ -81,7 +81,7 @@ Require'github-theme'.setup {}
 -- }
 
 Require'lualine'.setup {
-    options = { theme = 'github' },
+    -- options = { theme = 'github' },
     sections = {
         lualine_a = { 'mode' },
         lualine_b = {
