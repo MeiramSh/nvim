@@ -1,17 +1,3 @@
--- utils
-local function set_colorscheme(colorscheme)
-  for i, value in ipairs(vim.api.nvim_list_runtime_paths()) do
-    if string.match(value, colorscheme .. '%.n?vim') then
-      vim.cmd('colorscheme ' .. colorscheme)
-      break
-    end
-
-    if i == #vim.api.nvim_list_runtime_paths() then
-      print('The colorscheme ' .. colorscheme .. ' is not installed!')
-    end
-  end
-end
-
 -- options
 vim.g.mapleader = ' '
 vim.o.shell = '/bin/zsh'
@@ -24,6 +10,7 @@ vim.o.cursorline = true
 vim.opt.mouse = 'a'
 vim.opt.hidden = true
 
+-- lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -127,10 +114,12 @@ require 'lazy'.setup {
   },
 }
 
+-- autocommands
 vim.api.nvim_create_autocmd('BufWritePre', {
   callback = function(_) vim.lsp.buf.format() end
 })
 
+-- keymaps
 require 'which-key'.register({
     l = {
       name = '+lsp',
@@ -145,6 +134,7 @@ require 'which-key'.register({
   { prefix = '<leader>' }
 )
 
+-- completions for lsp
 local capabilities = require 'cmp_nvim_lsp'.default_capabilities(
   vim.lsp.protocol.make_client_capabilities()
 )
@@ -193,7 +183,3 @@ require 'lspconfig'.hls.setup {
   capabilities = capabilities,
   on_attach = on_attach
 }
-
-if false then
-  set_colorscheme 'tokyonight'
-end
