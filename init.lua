@@ -11,6 +11,7 @@ vim.opt.mouse = 'a'
 vim.opt.hidden = true
 
 
+
 -- lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -90,7 +91,6 @@ require 'lazy'.setup {
     },
     config = function()
       local cmp = require 'cmp' -- nvim-cmp
-
       cmp.setup {
         snippet = {
           -- REQUIRED - you must specify a snippet engine
@@ -134,8 +134,85 @@ require 'lazy'.setup {
       })
     end,
   },
-}
+  {
+    'goolord/alpha-nvim',
+    event = 'VimEnter',
+    opts = function()
+      local dashboard = require 'alpha.themes.dashboard'
+      dashboard.section.header.val = {
+        [[⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⡟⠉⠀⠀⣼⣿⢯⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠹⣿⣿⣿⠀⠈⠉⢿⣿⣿⣿⣿⣿⡍⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⢸⣏⢿⣿⣿⣿⣿⠇⠀⠀⢸⡿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠻⣿⣇⠘⣿⣿⠀⢀⡀⢻⣿⣿⣿⣿⡿⢟⡇⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠸⣿⡄⢻⣿⣿⣿⠀⠀⠀⢸⡇⣾⠋⣿⣿⡿⢁⣿⣿⡟⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⢻⣿⣿⠀⠹⣿⡀⢻⣿⠴⠋⠀⢘⣿⣿⣿⣿⢷⣿⡇⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⣿⣽⡄⢹⣿⣿⠀⠀⠀⠀⠧⡟⠀⣿⣿⠁⢸⣿⡏⠀⣿⡇⢻⣿⣿⣿⣿⣿⣿⡟⣿⡇⠀⢿⣿⠀⠀⢹⡧⣿⠁⠀⠀⠀⢨⣿⣿⣿⠃⣾⣽⣷⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⡟⢸⡿⣾⣿⣿⡇⠀⠀⠀⠀⢹⡀⠈⣏⠀⠸⣿⠀⠀⢸⠛⣿⣿⣿⣿⣿⣿⠿⣳⣿⠀⠀⣸⣿⠀⢀⣼⠇⠀⠀⠀⠀⠀⠰⣿⣿⣿⣼⡍⠃⣿⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⣿⣌⢧⣸⣿⠿⢧⠀⠀⠀⣀⠀⠁⠀⢻⠀⠀⣿⢦⠘⠾⣇⠹⣿⣿⡟⢻⡿⢰⠏⡟⠀⣼⣿⣧⠞⠉⠁⣀⣠⣀⣀⠀⢀⣰⠟⢻⣿⣻⣇⣴⡟⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠘⢯⠻⢿⣿⡆⠘⢿⣾⣿⣿⣿⣶⣤⣀⣀⣀⠀⣀⣀⡀⠈⠀⠸⣿⡇⣸⣷⠏⠘⠁⣀⣉⣀⣀⣤⣴⣾⣿⣿⣿⣿⣿⠟⠁⠀⣸⢋⡟⢫⡞⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠀⠈⢳⣾⣯⡁⠀⠀⠙⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣠⣿⡇⣿⣏⣤⣶⣾⣿⣿⣿⣿⣿⣿⣿⠿⠿⢿⣿⠁⠀⠀⠀⣿⣿⠇⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠀⠀⠈⢧⠈⣧⠀⠀⠀⠀⢻⣿⣿⣷⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢷⣿⣿⣿⣿⣿⣿⡟⠛⠉⠛⠛⠁⠀⣠⣿⠃⠀⠀⠀⠀⣿⡇⣼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣿⡄⠀⠀⠀⠀⠻⣿⣻⣿⣿⡉⠉⢹⣿⣿⡿⠃⠘⠆⠀⠀⠸⠁⠈⠿⣿⣿⣶⣤⣤⣤⣴⣾⡿⠃⠀⠀⠀⠀⢠⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣧⠀⠀⠀⠀⠀⠈⠉⠛⠛⠛⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⠀⠈⠉⠉⠀⠀⠀⠀⢠⡀⠀⠀⢸⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠸⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣧⠀⡀⣼⢸⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀]],
+        [[⠀⠀⠀⣀⣀⣀⣀⣠⣄⡀⠀⢸⡄⢻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠓⠚⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⠀⣰⠇⢸⣶⣶⣿⣿⣿⣿⣷⣦⣄⠀⠀⠀]],
+        [[⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⡇⠀⢳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⣤⡄⠀⠀⠀⠀⢀⣤⡤⠀⠀⠀⠀⠀⠀⠀⢀⣀⠀⢀⢺⣶⠏⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀]],
+        [[⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡀⠈⢿⡄⠀⠀⢴⡶⠂⠀⠀⠀⠀⠀⢰⡋⠀⠀⠀⠀⠀⠀⢙⡆⠀⠀⠀⠀⠀⠀⢀⣼⠟⠀⠁⣸⡏⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣅⠀⠀⠻⣧⠀⠈⢿⣦⣄⠀⠀⠀⠀⠀⢻⣆⠀⠀⠀⠀⣰⡟⠁⠀⠀⠀⠀⣀⣴⠏⠀⠰⢆⣾⠟⠀⣀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣆⠀⠀⠙⣧⡀⠈⢽⣿⣷⣤⣄⣀⣀⣈⣿⣷⣤⣴⣾⣟⣀⣀⣠⣤⣴⣾⣿⣣⠆⠀⢰⣾⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣄⠘⣿⡆⠘⢻⣿⣷⣏⠛⢿⠛⣿⠉⢽⡏⠀⣿⠁⢿⢃⣿⣿⡿⣱⣯⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⡿⣜⠿⣿⣾⣧⣼⣄⣰⣧⣠⣿⣴⣿⣿⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
+        [[]],
+      }
 
+      dashboard.section.buttons.val = {
+        dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
+        dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC <CR>'),
+        dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
+        dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
+      }
+      for _, button in ipairs(dashboard.section.buttons.val) do
+        button.opts.hl = 'AlphaButtons'
+        button.opts.hl_shortcut = 'AlphaShortcut'
+      end
+      dashboard.section.header.opts.hl = 'AlphaHeader'
+      dashboard.section.buttons.opts.hl = 'AlphaButtons'
+      dashboard.section.footer.opts.hl = 'AlphaFooter'
+      return dashboard
+    end,
+    config = function(_, dashboard)
+      -- close Lazy and re-open when the dashboard is ready
+      if vim.o.filetype == 'lazy' then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd('User', {
+          pattern = 'AlphaReady',
+          callback = function()
+            require 'lazy'.show()
+          end,
+        })
+      end
+
+      require 'alpha'.setup(dashboard.opts)
+
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'LazyVimStarted',
+        callback = function()
+          local stats = require 'lazy'.stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          dashboard.section.footer.val = '⚡ Neovim loaded ' .. stats.count .. ' plugins in ' .. ms .. 'ms'
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+    end,
+  }, }
+
+
+-- diagnostics icons
+local signs = { Error = ' ', Warn = ' ', Hint = ' ', Info = ' ' }
+for type, icon in pairs(signs) do
+  local hl = 'DiagnosticSign' .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
 
 -- autocommands
 vim.api.nvim_create_autocmd('BufWritePre', {
@@ -205,7 +282,10 @@ require 'lspconfig'.lua_ls.setup {
           trailing_table_separator = 'smart'
         },
       },
-      diagnostics = { globals = { 'vim' } },
+      diagnostics = {
+        globals = { 'vim' },
+        disable = { 'redundant-parameter' },
+      },
     },
   }, capabilities = capabilities,
   on_attach = on_attach,
