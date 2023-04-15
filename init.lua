@@ -10,6 +10,7 @@ vim.o.cursorline = true
 vim.opt.mouse = 'a'
 vim.opt.hidden = true
 
+
 -- lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -23,53 +24,72 @@ if not vim.loop.fs_stat(lazypath) then
   }
 end
 
+local meiram = (2 - 1 + 1)
+local b      = meiram + 2
+meiram       = b
+
+
+
 vim.opt.rtp:prepend(lazypath)
 
 require 'lazy'.setup {
+  {
+    'folke/noice.nvim',
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
+    opts = {
+      presets = {
+        bottom_search = true,         -- use a classic bottom cmdline for search
+        command_palette = true,       -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = false,       -- add a border to hover docs and signature help
+      },
+    },
+  },
+  'stevearc/dressing.nvim',
   {
     'folke/tokyonight.nvim',
     config = function()
       vim.cmd [[colorscheme tokyonight]]
       vim.cmd [[highlight Comment guifg=#7dcfff]]
-    end
+    end,
   },
   {
     'nvim-lualine/lualine.nvim',
-    deps = { 'kyazdani42/nvim-web-devicons', lazy = false },
-    config = true
+    dependencies = { 'kyazdani42/nvim-web-devicons' },
+    config = true,
   },
   {
     'windwp/nvim-autopairs',
-    config = true
+    config = true,
   },
   {
     'numToStr/Comment.nvim',
-    config = true
+    config = true,
   },
   {
     'folke/which-key.nvim',
-    config = true
+    config = true,
   },
   {
     'nvim-treesitter/nvim-treesitter',
-    main = 'nvim-treesitter.configs',
-    opts = {
-      ensure_installed = { 'lua', 'c', 'cpp', 'python' },
-    }
+    lazy = false,
   },
   'neovim/nvim-lspconfig',
-  'hrsh7th/cmp-nvim-lsp',
   {
     'hrsh7th/nvim-cmp',
-    deps = {
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
+    dependencies = {
+      'L3MON4D3/LuaSnip',         -- snippet engine
+      'hrsh7th/cmp-nvim-lsp',     -- lsp
+      'saadparwaiz1/cmp_luasnip', -- snippets
+      'hrsh7th/cmp-buffer',       -- text in buffer
+      'hrsh7th/cmp-cmdline',      -- neovim commands
     },
     config = function()
-      local cmp = require 'cmp'
+      local cmp = require 'cmp' -- nvim-cmp
 
       cmp.setup {
         snippet = {
@@ -78,7 +98,9 @@ require 'lazy'.setup {
             require 'luasnip'.lsp_expand(args.body) -- For `luasnip` users.
           end,
         },
-        window = {},
+
+        -- window is deleted
+
         mapping = cmp.mapping.preset.insert {
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -89,35 +111,37 @@ require 'lazy'.setup {
           -- Set `select` to `false` to only confirm explicitly selected items.
           ['<CR>'] = cmp.mapping.confirm { select = true },
         },
+
         sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' }, -- For luasnip users.
+          { name = 'nvim_lsp' }, -- cmp_nvim_lsp
+          { name = 'luasnip' },  -- For luasnip users.
         }, {
-          { name = 'buffer' },
-        })
+          { name = 'buffer' },   -- cmp-buffer
+        }),
 
       }
+
       cmp.setup.cmdline('/', {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = { { name = 'buffer' } }
+        sources = { { name = 'buffer' } }, -- cmp-buffer
       })
 
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline' }
-        })
+        sources = cmp.config.sources { -- 'path' is deleted
+          { name = 'cmdline' },        -- cmp-cmdline
+        },
       })
-    end
+    end,
   },
 }
 
+
 -- autocommands
 vim.api.nvim_create_autocmd('BufWritePre', {
-  callback = function(_) vim.lsp.buf.format() end
+  callback = function(_) vim.lsp.buf.format() end,
 })
+
 
 -- keymaps
 require 'which-key'.register({
@@ -134,6 +158,14 @@ require 'which-key'.register({
   { prefix = '<leader>' }
 )
 
+
+-- syntax highlighting
+require 'nvim-treesitter.configs'.setup {
+  ensure_installed = { 'lua', 'c', 'cpp', 'python' },
+  sync_install = false,
+}
+
+
 -- completions for lsp
 local capabilities = require 'cmp_nvim_lsp'.default_capabilities(
   vim.lsp.protocol.make_client_capabilities()
@@ -144,21 +176,20 @@ local servers = {
 }
 
 for _, v in pairs(servers) do
-  require 'lspconfig'[v].setup { capabilities = capabilities, }
+  require 'lspconfig'[v].setup { capabilities = capabilities }
 end
 
 local on_attach = function(_, _)
   vim.api.nvim_create_autocmd('CursorHold', {
-    callback = vim.diagnostic.open_float
+    callback = vim.diagnostic.open_float,
   })
 end
 
+-- language specific lsp configuration
 require 'lspconfig'.lua_ls.setup {
   settings = {
     Lua = {
-      completion = {
-        callSnippet = 'Replace'
-      },
+      completion = { callSnippet = 'Replace' },
       workspace = {
         -- Make the server aware of Neovim runtime files
         library = vim.api.nvim_get_runtime_file('', true),
@@ -170,16 +201,17 @@ require 'lspconfig'.lua_ls.setup {
         -- NOTE: the value should be STRING!!
         defaultConfig = {
           quote_style = 'single',
-          call_arg_parentheses = 'remove'
-        }
+          call_arg_parentheses = 'remove',
+          trailing_table_separator = 'smart'
+        },
       },
-      diagnostics = { globals = { 'vim' } }
-    }
+      diagnostics = { globals = { 'vim' } },
+    },
   }, capabilities = capabilities,
-  on_attach = on_attach
+  on_attach = on_attach,
 }
 
 require 'lspconfig'.hls.setup {
   capabilities = capabilities,
-  on_attach = on_attach
+  on_attach = on_attach,
 }
