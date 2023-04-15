@@ -12,8 +12,6 @@ vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
 
-
-
 -- lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -26,11 +24,6 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   }
 end
-
-local meiram = (2 - 1 + 1)
-local b      = meiram + 2
-meiram       = b
-
 
 
 vim.opt.rtp:prepend(lazypath)
@@ -256,7 +249,7 @@ require 'lazy'.setup {
 
 
 -- diagnostics icons
-local signs = { Error = ' ', Warn = ' ', Hint = ' ', Info = ' ' }
+local signs = { Error = '', Warn = '', Hint = '', Info = '' }
 for type, icon in pairs(signs) do
   local hl = 'DiagnosticSign' .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
