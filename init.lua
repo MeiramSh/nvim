@@ -8,6 +8,8 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.spell = true
+vim.o.foldmethod = 'indent'
+vim.o.foldlevel = 99
 vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
@@ -29,6 +31,16 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require 'lazy'.setup {
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = 'kevinhwang91/promise-async',
+    main = 'ufo',
+    opts = {
+      provider_selector = function()
+        return { 'treesitter', 'indent' }
+      end,
+    },
+  },
   {
     'lewis6991/gitsigns.nvim',
     opts = {
