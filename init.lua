@@ -8,8 +8,6 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.cursorline = true
 vim.o.spell = true
-vim.o.foldmethod = 'indent'
-vim.o.foldlevel = 99
 vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
@@ -36,12 +34,25 @@ require 'lazy'.setup {
     'kevinhwang91/nvim-ufo',
     dependencies = 'kevinhwang91/promise-async',
     main = 'ufo',
-    opts = {
-      provider_selector = function()
-        -- return { 'treesitter', 'indent' }
-        return 'indent'
-      end,
-    },
+    config = function()
+      vim.o.foldcolumn = '0'
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
+      local language_servers = require 'lspconfig'.util.available_servers()
+      for _, ls in ipairs(language_servers) do
+        require 'lspconfig'[ls].setup {
+          capabilities = capabilities,
+          -- you can add other fields for setting up lsp server in this table
+        }
+      end
+      require 'ufo'.setup()
+    end
   },
   {
     'lewis6991/gitsigns.nvim',
@@ -115,7 +126,7 @@ require 'lazy'.setup {
   },
   {
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'kyazdani42/nvim-web-devicons' },
+    dependencies = 'kyazdani42/nvim-web-devicons',
     config = true,
   },
   {
@@ -266,7 +277,7 @@ require 'lazy'.setup {
   {
     'nvim-telescope/telescope.nvim',
     tag = '0.1.1',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = 'nvim-lua/plenary.nvim',
   },
 }
 
@@ -278,6 +289,7 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
+
 -- remember folds
 vim.cmd [[
 augroup remember_folds
@@ -287,9 +299,9 @@ augroup remember_folds
 augroup END
 ]]
 
-
 -- keymaps
-require 'which-key'.register(
+local wk = require 'which-key'
+wk.register(
   {
     l = {
       name = '+lsp',
@@ -312,7 +324,7 @@ require 'which-key'.register(
   { prefix = '<leader>' }
 )
 
-require 'which-key'.register(
+wk.register(
   {
     l = {
       name = '+lsp',
