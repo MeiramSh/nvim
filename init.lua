@@ -44,36 +44,36 @@ require 'lazy'.setup {
   {
     'lewis6991/gitsigns.nvim',
     opts = {
-      signs                        = {
-        add          = { text = '│' },
-        change       = { text = '│' },
-        delete       = { text = '_' },
-        topdelete    = { text = '‾' },
+      signs = {
+        add = { text = '│' },
+        change = { text = '│' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
         changedelete = { text = '~' },
-        untracked    = { text = '┆' },
+        untracked = { text = '┆' },
       },
-      signcolumn                   = true,  -- Toggle with `:Gitsigns toggle_signs`
-      numhl                        = false, -- Toggle with `:Gitsigns toggle_numhl`
-      linehl                       = false, -- Toggle with `:Gitsigns toggle_linehl`
-      word_diff                    = false, -- Toggle with `:Gitsigns toggle_word_diff`
-      watch_gitdir                 = {
+      signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+      numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
+      linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
+      word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+      watch_gitdir = {
         interval = 1000,
         follow_files = true,
       },
-      attach_to_untracked          = true,
-      current_line_blame           = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-      current_line_blame_opts      = {
+      attach_to_untracked = true,
+      current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+      current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
         delay = 1000,
         ignore_whitespace = false,
       },
       current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
-      sign_priority                = 6,
-      update_debounce              = 100,
-      status_formatter             = nil,   -- Use default
-      max_file_length              = 40000, -- Disable if file is longer than this (in lines)
-      preview_config               = {
+      sign_priority = 6,
+      update_debounce = 100,
+      status_formatter = nil,  -- Use default
+      max_file_length = 40000, -- Disable if file is longer than this (in lines)
+      preview_config = {
         -- Options passed to nvim_open_win
         border = 'single',
         style = 'minimal',
@@ -81,7 +81,7 @@ require 'lazy'.setup {
         row = 0,
         col = 1,
       },
-      yadm                         = {
+      yadm = {
         enable = false,
       },
     },
@@ -257,7 +257,14 @@ require 'lazy'.setup {
         end,
       })
     end,
-  }, }
+  },
+
+  {
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.1',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+  },
+}
 
 
 -- diagnostics icons
@@ -274,7 +281,8 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 
 -- keymaps
-require 'which-key'.register({
+require 'which-key'.register(
+  {
     l = {
       name = '+lsp',
       h = { vim.lsp.buf.hover, 'hover' },
@@ -283,6 +291,14 @@ require 'which-key'.register({
       d = { vim.lsp.buf.definition, 'definition' },
       a = { vim.lsp.buf.code_action, 'code action' },
       e = { vim.diagnostic.open_float, 'diagnostics' },
+    },
+    t = {
+      name = '+telescope',
+      k = { '<cmd>Telescope keymaps<cr>', 'keymaps' },
+      d = { '<cmd>Telescope diagnostics<cr>', 'diagnostics' },
+      l = { '<cmd>Telescope live_grep<cr>', 'livegrep' },
+      f = { '<cmd>Telescope git_files<cr>', 'files' },
+      s = { '<cmd>Telescope lsp_document_symbols<cr>', 'symbols' },
     },
   },
   { prefix = '<leader>' }
