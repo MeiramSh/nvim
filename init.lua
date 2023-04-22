@@ -14,7 +14,8 @@ vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
 
--- lazy.nvim
+
+-- bootstrapping lazy.nvim
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -26,10 +27,10 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   }
 end
-
-
 vim.opt.rtp:prepend(lazypath)
 
+
+-- plugins
 require 'lazy'.setup {
   {
     'kevinhwang91/nvim-ufo',
@@ -37,7 +38,8 @@ require 'lazy'.setup {
     main = 'ufo',
     opts = {
       provider_selector = function()
-        return { 'treesitter', 'indent' }
+        -- return { 'treesitter', 'indent' }
+        return 'indent'
       end,
     },
   },
@@ -252,7 +254,9 @@ require 'lazy'.setup {
         callback = function()
           local stats = require 'lazy'.stats()
           local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          dashboard.section.footer.val = '⚡ Neovim loaded ' .. stats.count .. ' plugins in ' .. ms .. 'ms'
+          dashboard.section.footer.val =
+              '⚡ Neovim loaded ' .. stats.count
+              .. ' plugins in ' .. ms .. 'ms'
           pcall(vim.cmd.AlphaRedraw)
         end,
       })
@@ -274,10 +278,21 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
+
 -- autocommands
-vim.api.nvim_create_autocmd('BufWritePre', {
-  callback = function(_) vim.lsp.buf.format() end,
-})
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   callback = function(_) vim.lsp.buf.format() end,
+-- })
+
+
+-- remember folds
+vim.cmd [[
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave *.* mkview
+  autocmd BufWinEnter *.* silent! loadview
+augroup END
+]]
 
 
 -- keymaps
@@ -302,6 +317,19 @@ require 'which-key'.register(
     },
   },
   { prefix = '<leader>' }
+)
+
+require 'which-key'.register(
+  {
+    l = {
+      name = '+lsp',
+      f = { vim.lsp.buf.format, 'format selection' },
+    },
+  },
+  {
+    prefix = '<leader>',
+    mode = 'v'
+  }
 )
 
 
@@ -330,6 +358,7 @@ local on_attach = function(_, _)
     callback = vim.diagnostic.open_float,
   })
 end
+
 
 -- language specific lsp configuration
 require 'lspconfig'.lua_ls.setup {
