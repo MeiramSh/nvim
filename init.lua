@@ -278,13 +278,6 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
-
--- autocommands
--- vim.api.nvim_create_autocmd('BufWritePre', {
---   callback = function(_) vim.lsp.buf.format() end,
--- })
-
-
 -- remember folds
 vim.cmd [[
 augroup remember_folds
