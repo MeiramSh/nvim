@@ -232,7 +232,8 @@ require 'lazy'.setup {
       }
 
       dashboard.section.buttons.val = {
-        dashboard.button('n', ' ' .. ' New file', ':ene <BAR> startinsert <CR>'),
+        dashboard.button('n', ' ' .. ' New file',
+        ':ene <BAR> startinsert <CR>'),
         dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC <CR>'),
         dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
         dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
@@ -382,7 +383,8 @@ require 'lspconfig'.lua_ls.setup {
         defaultConfig = {
           quote_style = 'single',
           call_arg_parentheses = 'remove',
-          trailing_table_separator = 'smart'
+          trailing_table_separator = 'smart',
+          max_line_length = '80',
         },
       },
       diagnostics = {
