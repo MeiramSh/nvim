@@ -11,6 +11,12 @@ vim.o.spell = true
 vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
+vim.opt.termguicolors = true
+
+local border = '#c0caf5'
+
+
+-- dashboard picture
 local picture = {
   [[⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⡟⠉⠀⠀⣼⣿⢯⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠹⣿⣿⣿⠀⠈⠉⢿⣿⣿⣿⣿⣿⡍⠀⠀⠀⠀⠀⠀⠀⠀]],
   [[⠀⠀⠀⠀⠀⢸⣏⢿⣿⣿⣿⣿⠇⠀⠀⢸⡿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠻⣿⣇⠘⣿⣿⠀⢀⡀⢻⣿⣿⣿⣿⡿⢟⡇⠀⠀⠀⠀⠀⠀⠀]],
@@ -52,8 +58,70 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 
+
 -- plugins
 require 'lazy'.setup {
+  {
+    'Exafunction/codeium.vim',
+    config = function()
+      vim.keymap.set('i', '<C-g>',
+      function() return vim.fn['codeium#Accept']() end, { expr = true })
+      vim.keymap.set('i', '<c-q>',
+      function() return vim.fn['codeium#CycleCompletions'](1) end,
+      { expr = true })
+      vim.keymap.set('i', '<c-a>',
+      function() return vim.fn['codeium#CycleCompletions'](-1) end,
+      { expr = true })
+      vim.keymap.set('i', '<c-x>',
+      function() return vim.fn['codeium#Clear']() end, { expr = true })
+    end,
+  },
+  {
+    'iamcco/markdown-preview.nvim',
+    config = function()
+      vim.fn['mkdp#util#install']()
+      vim.g.mkdp_auto_close = 0
+    end,
+  },
+  {
+    'akinsho/bufferline.nvim',
+    config = function()
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'AlphaReady',
+        desc = 'disable tabline for alpha',
+        callback = function()
+          vim.opt.showtabline = 0
+        end,
+      })
+      vim.api.nvim_create_autocmd('BufUnload', {
+        buffer = 0,
+        desc = 'enable tabline after alpha',
+        callback = function()
+          vim.opt.showtabline = 2
+          require 'bufferline'.setup {}
+        end,
+      })
+      vim.api.nvim_create_autocmd('BufEnter', {
+        buffer = 0,
+        desc = 'enable tabline after alpha',
+        callback = function()
+          vim.opt.showtabline = 2
+          require 'bufferline'.setup {}
+        end,
+      })
+    end,
+  },
+  { 'nvim-treesitter/playground' },
+  {
+    'NvChad/nvim-colorizer.lua',
+    config = function()
+      require 'colorizer'.setup {
+        user_default_options = {
+          mode = 'virtualtext'
+        },
+      }
+    end,
+  },
   {
     'kevinhwang91/nvim-ufo',
     dependencies = 'kevinhwang91/promise-async',
@@ -63,7 +131,7 @@ require 'lazy'.setup {
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
-      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      --[[ local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities.textDocument.foldingRange = {
         dynamicRegistration = false,
         lineFoldingOnly = true,
@@ -75,8 +143,13 @@ require 'lazy'.setup {
           -- you can add other fields for setting up lsp server in this table
         }
       end
-      require 'ufo'.setup()
-    end
+      require 'ufo'.setup() ]]
+      require 'ufo'.setup {
+        provider_selector = function(bufnr, filetype, buftype)
+          return { 'treesitter', 'indent' }
+        end,
+      }
+    end,
   },
   {
     'lewis6991/gitsigns.nvim',
@@ -105,7 +178,8 @@ require 'lazy'.setup {
         delay = 1000,
         ignore_whitespace = false,
       },
-      current_line_blame_formatter = '<author>, <author_time:%Y-%m-%d> - <summary>',
+      current_line_blame_formatter =
+      '<author>, <author_time:%Y-%m-%d> - <summary>',
       sign_priority = 6,
       update_debounce = 100,
       status_formatter = nil,  -- Use default
@@ -144,6 +218,11 @@ require 'lazy'.setup {
   {
     'folke/tokyonight.nvim',
     config = function()
+      require 'tokyonight'.setup {
+        on_colors = function(colors)
+          colors.border = '#565f89'
+        end,
+      }
       vim.cmd [[colorscheme tokyonight]]
       vim.cmd [[highlight Comment guifg=#7dcfff]]
     end,
@@ -151,7 +230,19 @@ require 'lazy'.setup {
   {
     'nvim-lualine/lualine.nvim',
     dependencies = 'kyazdani42/nvim-web-devicons',
-    config = true,
+    config = function()
+      vim.opt.showcmdloc = 'statusline'
+      require 'lualine'.setup {
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = { 'branch', 'diagnostics' },
+          lualine_c = {},
+          lualine_x = { 'filetype', 'diff', '%S' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
+        },
+      }
+    end,
   },
   {
     'windwp/nvim-autopairs',
@@ -170,6 +261,8 @@ require 'lazy'.setup {
     lazy = false,
   },
   'neovim/nvim-lspconfig',
+  
+
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -224,6 +317,9 @@ require 'lazy'.setup {
       })
     end,
   },
+
+
+
   {
     'goolord/alpha-nvim',
     event = 'VimEnter',
@@ -232,7 +328,7 @@ require 'lazy'.setup {
       dashboard.section.header.val = picture
       dashboard.section.buttons.val = {
         dashboard.button('n', ' ' .. ' New file',
-        ':ene <BAR> startinsert <CR>'),
+          ':ene <BAR> startinsert <CR>'),
         dashboard.button('c', ' ' .. ' Config', ':e $MYVIMRC <CR>'),
         dashboard.button('l', '󰒲 ' .. ' Lazy', ':Lazy<CR>'),
         dashboard.button('q', ' ' .. ' Quit', ':qa<CR>'),
@@ -278,6 +374,13 @@ require 'lazy'.setup {
     'nvim-telescope/telescope.nvim',
     tag = '0.1.1',
     dependencies = 'nvim-lua/plenary.nvim',
+    config = {
+      pickers = {
+        buffers = {
+          initial_mode = 'normal'
+        },
+      },
+    },
   },
 }
 
@@ -301,6 +404,8 @@ augroup END
 
 -- keymaps
 local wk = require 'which-key'
+local builtin = require 'telescope.builtin'
+local noice = require 'noice'
 wk.register(
   {
     l = {
@@ -310,15 +415,24 @@ wk.register(
       r = { vim.lsp.buf.references, 'references' },
       d = { vim.lsp.buf.definition, 'definition' },
       a = { vim.lsp.buf.code_action, 'code action' },
+      f = { function()
+        vim.lsp.buf.format()
+        vim.cmd [[:w]]
+      end, 'format entire file' },
       e = { vim.diagnostic.open_float, 'diagnostics' },
     },
     t = {
       name = '+telescope',
-      k = { '<cmd>Telescope keymaps<cr>', 'keymaps' },
-      d = { '<cmd>Telescope diagnostics<cr>', 'diagnostics' },
-      l = { '<cmd>Telescope live_grep<cr>', 'livegrep' },
-      f = { '<cmd>Telescope git_files<cr>', 'files' },
-      s = { '<cmd>Telescope lsp_document_symbols<cr>', 'symbols' },
+      k = { builtin.keymaps, 'keymaps' },
+      d = { builtin.diagnostics, 'diagnostics' },
+      l = { builtin.live_grep, 'livegrep' },
+      f = { builtin.git_files, 'files' },
+      s = { builtin.lsp_document_symbols, 'symbols' },
+      b = { builtin.buffers, 'buffers' },
+    },
+    n = {
+      name = '+noice',
+      d = { function() noice.cmd 'dismiss' end, 'close messages' },
     },
   },
   { prefix = '<leader>' }
@@ -326,9 +440,46 @@ wk.register(
 
 wk.register(
   {
+    ['<C-.>'] = {
+      function()
+        vim.api.nvim_feedkeys('⋅', 'i', true)
+      end,
+      'dot',
+    },
+    ['<C-x>'] = {
+      function()
+        vim.api.nvim_feedkeys('×', 'i', true)
+      end,
+      'cross product',
+    },
+    ['<C-l>'] = {
+      function()
+        vim.api.nvim_feedkeys('λ', 'i', true)
+      end,
+      'lambda',
+    },
+    ['<C-r>'] = {
+      function()
+        vim.api.nvim_feedkeys('∘', 'i', true)
+      end,
+      'ring operator',
+    },
+  },
+  { mode = 'i' }
+)
+
+wk.register(
+  {
     l = {
       name = '+lsp',
-      f = { vim.lsp.buf.format, 'format selection' },
+      f = {
+        function()
+          vim.lsp.buf.format()
+          vim.api.nvim_feedkeys('\x1b', 'v', true)
+          vim.cmd [[:w]]
+        end,
+        'format selection'
+      },
     },
   },
   {
@@ -395,7 +546,15 @@ require 'lspconfig'.lua_ls.setup {
   on_attach = on_attach,
 }
 
+
+-- haskell
 require 'lspconfig'.hls.setup {
+  capabilities = capabilities,
+  on_attach = on_attach,
+}
+
+--- elm
+require 'lspconfig'.elmls.setup {
   capabilities = capabilities,
   on_attach = on_attach,
 }
