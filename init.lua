@@ -1,4 +1,4 @@
--- options
+-- OPTIONS: BEGIN
 vim.g.mapleader = ' '
 vim.o.shell = '/bin/zsh'
 vim.o.expandtab = true -- space instead of tabs
@@ -12,11 +12,10 @@ vim.opt.mouse = 'a'
 vim.opt.hidden = true
 vim.opt.laststatus = 3
 vim.opt.termguicolors = true
+-- OPTIONS: END
 
-local border = '#c0caf5'
 
-
--- dashboard picture
+-- DASHBOARD PICTURE: BEGIN
 local picture = {
   [[⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⡟⠉⠀⠀⣼⣿⢯⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⠹⣿⣿⣿⠀⠈⠉⢿⣿⣿⣿⣿⣿⡍⠀⠀⠀⠀⠀⠀⠀⠀]],
   [[⠀⠀⠀⠀⠀⢸⣏⢿⣿⣿⣿⣿⠇⠀⠀⢸⡿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣏⠻⣿⣇⠘⣿⣿⠀⢀⡀⢻⣿⣿⣿⣿⡿⢟⡇⠀⠀⠀⠀⠀⠀⠀]],
@@ -40,10 +39,12 @@ local picture = {
   [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
   [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
   [[⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿]],
-  [[]],
+  [[]], -- this is mandatory
 }
+-- DASHBOARD PICTURE: END
 
--- bootstrapping lazy.nvim
+
+-- BOOTSTRAPPING LAZY.NVIM: BEGIN
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system {
@@ -56,24 +57,24 @@ if not vim.loop.fs_stat(lazypath) then
   }
 end
 vim.opt.rtp:prepend(lazypath)
+-- BOOTSTRAPPING LAZY.NVIM: END
 
 
-
--- plugins
+-- PLUGINS: BEGIN
 require 'lazy'.setup {
   {
     'Exafunction/codeium.vim',
     config = function()
       vim.keymap.set('i', '<C-g>',
-      function() return vim.fn['codeium#Accept']() end, { expr = true })
+        function() return vim.fn['codeium#Accept']() end, { expr = true })
       vim.keymap.set('i', '<c-q>',
-      function() return vim.fn['codeium#CycleCompletions'](1) end,
-      { expr = true })
+        function() return vim.fn['codeium#CycleCompletions'](1) end,
+        { expr = true })
       vim.keymap.set('i', '<c-a>',
-      function() return vim.fn['codeium#CycleCompletions'](-1) end,
-      { expr = true })
+        function() return vim.fn['codeium#CycleCompletions'](-1) end,
+        { expr = true })
       vim.keymap.set('i', '<c-x>',
-      function() return vim.fn['codeium#Clear']() end, { expr = true })
+        function() return vim.fn['codeium#Clear']() end, { expr = true })
     end,
   },
   {
@@ -117,7 +118,7 @@ require 'lazy'.setup {
     config = function()
       require 'colorizer'.setup {
         user_default_options = {
-          mode = 'virtualtext'
+          mode = 'virtualtext',
         },
       }
     end,
@@ -131,6 +132,7 @@ require 'lazy'.setup {
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
+
       --[[ local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities.textDocument.foldingRange = {
         dynamicRegistration = false,
@@ -144,10 +146,21 @@ require 'lazy'.setup {
         }
       end
       require 'ufo'.setup() ]]
+
       require 'ufo'.setup {
-        provider_selector = function(bufnr, filetype, buftype)
+        provider_selector = function(_, _, _)
           return { 'treesitter', 'indent' }
         end,
+        open_fold_hl_timeout = 100,
+        close_fold_kinds = { 'imports', 'comment' },
+        enable_get_fold_virt_text = true,
+        preview = {
+          win_config = {
+            border = 'single',
+            winblend = 0,
+          },
+        },
+
       }
     end,
   },
@@ -261,7 +274,7 @@ require 'lazy'.setup {
     lazy = false,
   },
   'neovim/nvim-lspconfig',
-  
+
 
   {
     'hrsh7th/nvim-cmp',
@@ -304,7 +317,7 @@ require 'lazy'.setup {
 
       }
 
-      cmp.setup.cmdline('/', {
+      --[[cmp.setup.cmdline('/', {
         mapping = cmp.mapping.preset.cmdline(),
         sources = { { name = 'buffer' } }, -- cmp-buffer
       })
@@ -315,6 +328,7 @@ require 'lazy'.setup {
           { name = 'cmdline' },        -- cmp-cmdline
         },
       })
+      ]]
     end,
   },
 
@@ -377,23 +391,25 @@ require 'lazy'.setup {
     config = {
       pickers = {
         buffers = {
-          initial_mode = 'normal'
+          initial_mode = 'normal',
         },
       },
     },
   },
 }
+-- PLUGINS: END
 
 
--- diagnostics icons
+-- DIAGNOSTICS ICONS: BEGIN
 local signs = { Error = '', Warn = '', Hint = '', Info = '' }
 for type, icon in pairs(signs) do
   local hl = 'DiagnosticSign' .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
+-- DIAGNOSTICS ICONS: END
 
 
--- remember folds
+-- REMEMBER FOLDS: BEGIN
 vim.cmd [[
 augroup remember_folds
   autocmd!
@@ -401,8 +417,9 @@ augroup remember_folds
   autocmd BufWinEnter *.* silent! loadview
 augroup END
 ]]
+-- REMEMBER FOLDS: END
 
--- keymaps
+-- KEYMAPS: BEGIN
 local wk = require 'which-key'
 local builtin = require 'telescope.builtin'
 local noice = require 'noice'
@@ -478,31 +495,36 @@ wk.register(
           vim.api.nvim_feedkeys('\x1b', 'v', true)
           vim.cmd [[:w]]
         end,
-        'format selection'
+        'format selection',
       },
     },
   },
   {
     prefix = '<leader>',
-    mode = 'v'
+    mode = 'v',
   }
 )
+-- KEYMAPS: END
 
 
--- syntax highlighting
+-- SYNTAX HIGHLIGHTING: BEGIN
 require 'nvim-treesitter.configs'.setup {
+  modules = { 'query' },
+  ignore_install = {},
+  auto_install = false,
   ensure_installed = { 'lua', 'c', 'cpp', 'python' },
   sync_install = false,
 }
+-- SYNTAX HIGHLIGHTING: END
 
 
--- completions for lsp
+-- COMPLETIONS FOR LSP: BEGIN
 local capabilities = require 'cmp_nvim_lsp'.default_capabilities(
   vim.lsp.protocol.make_client_capabilities()
 )
 
 local servers = {
-  'clangd', 'tsserver', 'html', 'tailwindcss', 'emmet_ls', 'pyright'
+  'clangd', 'tsserver', 'html', 'tailwindcss', 'emmet_ls', 'pyright',
 }
 
 for _, v in pairs(servers) do
@@ -514,9 +536,9 @@ local on_attach = function(_, _)
     callback = vim.diagnostic.open_float,
   })
 end
+-- COMPLETIONS FOR LSP: END
 
-
--- language specific lsp configuration
+-- MISCALLENOUS: BEGIN
 require 'lspconfig'.lua_ls.setup {
   settings = {
     Lua = {
@@ -553,8 +575,9 @@ require 'lspconfig'.hls.setup {
   on_attach = on_attach,
 }
 
---- elm
+-- elm
 require 'lspconfig'.elmls.setup {
   capabilities = capabilities,
   on_attach = on_attach,
 }
+-- MISCALLENOUS: END
