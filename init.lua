@@ -123,6 +123,7 @@ require 'lazy'.setup {
       }
     end,
   },
+
   {
     'kevinhwang91/nvim-ufo',
     dependencies = 'kevinhwang91/promise-async',
@@ -132,83 +133,93 @@ require 'lazy'.setup {
       vim.o.foldlevel = 99
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
+      -- vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep:│,foldclose:]]
+      vim.cmd('highlight FoldColumn guifg=' ..
+        vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID 'Comment'), 'fg'))
 
-      --[[ local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities.textDocument.foldingRange = {
-        dynamicRegistration = false,
-        lineFoldingOnly = true,
-      }
-      local language_servers = require 'lspconfig'.util.available_servers()
-      for _, ls in ipairs(language_servers) do
-        require 'lspconfig'[ls].setup {
-          capabilities = capabilities,
-          -- you can add other fields for setting up lsp server in this table
-        }
-      end
-      require 'ufo'.setup() ]]
+      vim.keymap.set('n', 'zR', require 'ufo'.openAllFolds)
+      vim.keymap.set('n', 'zM', require 'ufo'.closeAllFolds)
 
-      require 'ufo'.setup {
+      local ufo_setup = {
         provider_selector = function(_, _, _)
           return { 'treesitter', 'indent' }
         end,
-        open_fold_hl_timeout = 100,
-        close_fold_kinds = { 'imports', 'comment' },
-        enable_get_fold_virt_text = true,
-        preview = {
-          win_config = {
-            border = 'single',
-            winblend = 0,
-          },
-        },
-
       }
+
+      require 'ufo'.setup(ufo_setup)
     end,
   },
+
+  {
+    'luukvbaal/statuscol.nvim',
+    config = function()
+      --[[
+      local builtin = require 'statuscol.builtin'
+      require 'statuscol'.setup {
+        segments = {
+          {
+            text = { builtin.foldfunc},
+            click = 'v:lua.ScFa'
+          },
+        },
+      }
+      ]]
+    end,
+  },
+
   {
     'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '│' },
-        change = { text = '│' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-        untracked = { text = '┆' },
-      },
-      signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-      numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
-      linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
-      word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
-      watch_gitdir = {
-        interval = 1000,
-        follow_files = true,
-      },
-      attach_to_untracked = true,
-      current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-      current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-        delay = 1000,
-        ignore_whitespace = false,
-      },
-      current_line_blame_formatter =
-      '<author>, <author_time:%Y-%m-%d> - <summary>',
-      sign_priority = 6,
-      update_debounce = 100,
-      status_formatter = nil,  -- Use default
-      max_file_length = 40000, -- Disable if file is longer than this (in lines)
-      preview_config = {
-        -- Options passed to nvim_open_win
-        border = 'single',
-        style = 'minimal',
-        relative = 'cursor',
-        row = 0,
-        col = 1,
-      },
-      yadm = {
-        enable = false,
-      },
-    },
+    config = function()
+      require('gitsigns').setup()
+    end
+    -- opts = {
+    --   signs = {
+    --     add = { text = '│' },
+    --     change = { text = '│' },
+    --     delete = { text = '_' },
+    --     topdelete = { text = '‾' },
+    --     changedelete = { text = '~' },
+    --     untracked = { text = '┆' },
+    --   },
+    --
+    --   -- CHANGED: BEGIN
+    --   -- signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
+    --   signcolumn = true,
+    --   -- CHANGED: END
+    --
+    --   numhl = false,     -- Toggle with `:Gitsigns toggle_numhl`
+    --   linehl = false,    -- Toggle with `:Gitsigns toggle_linehl`
+    --   word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
+    --   watch_gitdir = {
+    --     interval = 1000,
+    --     follow_files = true,
+    --   },
+    --   attach_to_untracked = true,
+    --   current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+    --   current_line_blame_opts = {
+    --     virt_text = true,
+    --     virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+    --     delay = 1000,
+    --     ignore_whitespace = false,
+    --   },
+    --   current_line_blame_formatter =
+    --   '<author>, <author_time:%Y-%m-%d> - <summary>',
+    --   sign_priority = 6,
+    --   update_debounce = 100,
+    --   status_formatter = nil,  -- Use default
+    --   max_file_length = 40000, -- Disable if file is longer than this (in lines)
+    --   preview_config = {
+    --     -- Options passed to nvim_open_win
+    --     border = 'single',
+    --     style = 'minimal',
+    --     relative = 'cursor',
+    --     row = 0,
+    --     col = 1,
+    --   },
+    --   yadm = {
+    --     enable = false,
+    --   },
+    -- },
   },
 
   {
@@ -386,22 +397,14 @@ require 'lazy'.setup {
 
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.1',
     dependencies = 'nvim-lua/plenary.nvim',
-    config = {
-      pickers = {
-        buffers = {
-          initial_mode = 'normal',
-        },
-      },
-    },
   },
 }
 -- PLUGINS: END
 
 
 -- DIAGNOSTICS ICONS: BEGIN
-local signs = { Error = '', Warn = '', Hint = '', Info = '' }
+local signs = { Error = '', Warn = '', Hint = '', Info = '' }
 for type, icon in pairs(signs) do
   local hl = 'DiagnosticSign' .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -429,7 +432,7 @@ wk.register(
       name = '+lsp',
       h = { vim.lsp.buf.hover, 'hover' },
       n = { vim.lsp.buf.rename, 'rename' },
-      r = { vim.lsp.buf.references, 'references' },
+      r = { builtin.lsp_references, 'references' },
       d = { vim.lsp.buf.definition, 'definition' },
       a = { vim.lsp.buf.code_action, 'code action' },
       f = { function()
@@ -440,16 +443,22 @@ wk.register(
     },
     t = {
       name = '+telescope',
+      r = { builtin.resume, 'resume' },
       k = { builtin.keymaps, 'keymaps' },
       d = { builtin.diagnostics, 'diagnostics' },
       l = { builtin.live_grep, 'livegrep' },
       f = { builtin.git_files, 'files' },
-      s = { builtin.lsp_document_symbols, 'symbols' },
+      s = { builtin.lsp_document_symbols, 'document symbols' },
+      w = { builtin.lsp_dynamic_workspace_symbols, 'workspace symbols' },
       b = { builtin.buffers, 'buffers' },
     },
     n = {
       name = '+noice',
       d = { function() noice.cmd 'dismiss' end, 'close messages' },
+    },
+    z = {
+      name = '+folds',
+      t = { function() vim.api.nvim_input 'za' end, 'toggle fold' },
     },
   },
   { prefix = '<leader>' }
@@ -579,5 +588,27 @@ require 'lspconfig'.hls.setup {
 require 'lspconfig'.elmls.setup {
   capabilities = capabilities,
   on_attach = on_attach,
+
 }
 -- MISCALLENOUS: END
+
+local old = vim.lsp.util.apply_text_document_edit
+
+vim.lsp.util.apply_text_document_edit =
+    function(text_document_edit, index, offset_encoding)
+      vim.print 'lolkek'
+      old(text_document_edit, index, offset_encoding)
+      vim.print(text_document_edit)
+    end
+
+local function f0()
+  vim.print 'unchanged'
+end
+
+F1 = f0
+
+f0 = function()
+  vim.print 'changed'
+end
+
+F1()
